@@ -1,0 +1,9 @@
+{
+  "name": "OffinePen",
+  "short_name": "OfflinePen",
+  "description": "Create a frontend project without any server connection",
+  "start_url": "./?homescreen=1",
+  "display": "standalone",
+  "theme_color": "#242526",
+  "background_color": "#242526"
+}
