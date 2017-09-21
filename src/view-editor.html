@@ -87,7 +87,7 @@
         this._metaDebouncer,
         Polymer.Async.timeOut.after(1000),
         () => OfflinePen.db.pens
-          .update(this.currentId, { ...change.base, updatedAt: (new Date()).getTime() })
+          .update(this.currentId, Object.assign({}, change.base, { updatedAt: (new Date()).getTime() }))
           .then(() => this.hasSaved = true)
       );
     }
