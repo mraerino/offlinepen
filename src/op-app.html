@@ -53,16 +53,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          'routeChanged(route.*)'
+          'routeChanged(route.*)',
+          'viewChanged(mainView.*)'
         ];
       }
 
       ready() {
         super.ready();
 
-        OfflinePen.db.pens.orderBy('updatedAt').limit(this.listLimit).toArray().then(pens => this.pens = pens);
-
         this.addEventListener('op-createPen', () => this.createPen());
+      }
+
+      viewChanged(change) {
+        if(change.base && change.base.page && change.base.page === 'list') {
+          this.fetchData();
+        }
+      }
+
+      fetchData() {
+        OfflinePen.db.pens.orderBy('updatedAt').limit(this.listLimit).toArray().then(pens => this.pens = pens);
       }
 
       createPen() {
