@@ -8,7 +8,10 @@
 
     <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}" active="{{ editorActive }}"></app-route>
 
-    <h1>Pen ID: [[ routeData.penId ]]</h1>
+    <header>
+      <a href="/list" title="Back to pen list">&lt;</a>
+      <h1>Pen: [[ routeData.penId ]]</h1>
+    </header>
   </template>
 </dom-module>
 
