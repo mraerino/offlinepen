@@ -17,9 +17,11 @@
     <div role="listbox">
       <dom-repeat items="[[ pens ]]">
         <template>
-          <paper-item>
-            [[ item.name ]]
-          </paper-item>
+          <a href="/edit/[[ item.id ]]" tabindex="-1">
+            <paper-item>
+              [[ item.name ]]
+            </paper-item>
+          </a>
         </template>
       </dom-repeat>
     </div>
