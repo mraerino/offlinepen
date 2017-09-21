@@ -1,5 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/utils/debounce.html">
+<link rel="import" href="../bower_components/polymer/lib/utils/async.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 <dom-module id="view-editor">
   <template>
@@ -10,7 +13,8 @@
 
     <header>
       <a href="/list" title="Back to pen list">&lt;</a>
-      <h1>Pen: [[ penMeta.name ]]</h1>
+      <paper-input label="Name of the pen" value="{{ penMeta.name }}"></paper-input>
+      <p>[[ saveState ]]</p>
     </header>
   </template>
 </dom-module>
@@ -31,13 +35,22 @@
         },
         penMeta: {
           type: Object
+        },
+        hasSaved: {
+          type: Boolean,
+          value: true
+        },
+        saveState: {
+          type: String,
+          computed: 'computeSaveState(hasSaved)'
         }
       };
     }
 
     static get observers() {
       return [
-        'routeChanged(routeData.*, editorActive)'
+        'routeChanged(routeData.*, editorActive)',
+        'metaChanged(penMeta.*)'
       ];
     }
 
@@ -58,7 +71,29 @@
     }
 
     fetchPen(id) {
-      OfflinePen.db.pens.get(id).then(pen => this.penMeta = pen);
+      this._fetching = true;
+      OfflinePen.db.pens.get(id)
+        .then(pen => this.penMeta = pen)
+        .then(() => Polymer.Async.timeOut.run(() => this._fetching = false));
+    }
+
+    metaChanged(change) {
+      if(this.currentId === "" || this._fetching || change.path === 'penMeta.id') {
+        return;
+      }
+
+      this.hasSaved = false;
+      this._metaDebouncer = Polymer.Debouncer.debounce(
+        this._metaDebouncer,
+        Polymer.Async.timeOut.after(1000),
+        () => OfflinePen.db.pens
+          .update(this.currentId, { ...change.base, updatedAt: (new Date()).getTime() })
+          .then(() => this.hasSaved = true)
+      );
+    }
+
+    computeSaveState(saved) {
+      return saved ? 'Saved.' : 'Changed...';
     }
   }
 
