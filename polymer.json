@@ -2,6 +2,8 @@
   "entrypoint": "index.html",
   "shell": "src/op-app.html",
   "fragments": [
+    "src/view-list.html",
+    "src/view-editor.html"
   ],
   "sources": [
     "src/**/*",
