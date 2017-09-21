@@ -78,7 +78,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       fetchData() {
-        OfflinePen.db.pens.orderBy('updatedAt').limit(this.listLimit).toArray().then(pens => this.pens = pens);
+        OfflinePen.db.pens.orderBy('updatedAt').reverse().limit(this.listLimit).toArray().then(pens => this.pens = pens);
       }
 
       createPen() {
