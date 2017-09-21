@@ -61,7 +61,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready() {
         super.ready();
 
-        this.addEventListener('op-createPen', () => this.createPen());
+        this.addEventListener('op-createPen', () =>
+          this.createPen()
+        );
+        this.addEventListener('op-createPenAndOpen', () =>
+          this.createPen()
+              .then(id => this.set('route.path', `/edit/${id}`))
+        );
         this.addEventListener('op-navigateTo', e => e.detail.path && this.set('route.path', e.detail.path));
       }
 
@@ -82,7 +88,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           name: "Untitled Pen",
           updatedAt: (new Date()).getTime()
         };
-        OfflinePen.db.pens.put(pen).then(() => this.unshift('pens', pen));
+        return OfflinePen.db.pens.put(pen)
+          .then(() => this.unshift('pens', pen))
+          .then(() => id);
       }
 
       routeChanged(change) {
