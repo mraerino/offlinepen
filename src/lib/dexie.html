@@ -1,0 +1,13 @@
+<script src="../../node_modules/dexie/dist/dexie.js"></script>
+<script>
+  window.OfflinePen = window.OfflinePen || {};
+  (function (scope) {
+    // Create Dexie db
+    const db = new Dexie("offlinepen");
+    db.version(1).stores({
+      pens: 'id, name, updatedAt',
+      files: 'id, pen_id, name'
+    });
+    scope.db = db;
+  })(window.OfflinePen);
+</script>

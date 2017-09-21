@@ -11,7 +11,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="lib/dexie.html">
+<link rel="import" href="lib/cuid.html">
 
 <dom-module id="op-app">
   <template>
@@ -21,14 +23,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+    <app-location route="{{ route }}"></app-location>
+    <app-route route="{{ route }}" pattern="/:page" data="{{ mainView }}" tail="{{ subroute }}"></app-route>
 
-    <h1>OfflinePen</h1>
+    <iron-lazy-pages attr-for-selected="view"
+                     selected="[[ mainView.page ]]"
+                     fallback-selection="404">
+      <view-list view="list" data-path="view-list.html" pens="[[ pens ]]"></view-list>
+      <view-editor view="edit" data-path="view-editor.html" route="[[ subroute ]]"></view-editor>
+      <div view="404">404. Oops.</div>
+    </iron-lazy-pages>
   </template>
 
   <script>
@@ -37,17 +41,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          page: {
-            type: String,
-            reflectToAttribute: true,
+          pens: {
+            type: Array
           },
-          routeData: Object,
-          subroute: String
+          listLimit: {
+            type: Number,
+            value: () => 50
+          }
         };
       }
 
       static get observers() {
-        return [];
+        return [
+          'routeChanged(route.*)'
+        ];
+      }
+
+      ready() {
+        super.ready();
+
+        OfflinePen.db.pens.orderBy('updatedAt').limit(this.listLimit).toArray().then(pens => this.pens = pens);
+
+        this.addEventListener('op-createPen', () => this.createPen());
+      }
+
+      createPen() {
+        const id = cuid();
+        const pen = {
+          id: id,
+          name: "Untitled Pen",
+          updatedAt: (new Date()).getTime()
+        };
+        OfflinePen.db.pens.put(pen).then(() => this.unshift('pens', pen));
+      }
+
+      routeChanged(change) {
+        if(change.base && change.base.path == '/') {
+          this.set('route.path', '/list');
+        }
       }
     }
 

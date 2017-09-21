@@ -1,0 +1,29 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
+<dom-module id="view-editor">
+  <template>
+    <style>
+    </style>
+
+    <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}"></app-route>
+
+    <h1>Pen ID: [[ routeData.penId ]]</h1>
+  </template>
+</dom-module>
+
+<script>
+  class ViewEditor extends Polymer.Element {
+    static get is() { return 'view-editor'; }
+
+    static get properties() {
+      return {
+        route: {
+          type: Object
+        }
+      };
+    }
+  }
+
+  customElements.define(ViewEditor.is, ViewEditor);
+</script>

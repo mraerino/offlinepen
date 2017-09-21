@@ -1,0 +1,53 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="view-list">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <paper-button on-tap="createPen">Create new pen</paper-button>
+
+    <div role="listbox">
+      <dom-repeat items="[[ pens ]]">
+        <template>
+          <paper-item>
+            [[ item.name ]]
+          </paper-item>
+        </template>
+      </dom-repeat>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class ViewList extends Polymer.GestureEventListeners(Polymer.Element) {
+    static get is() {
+      return 'view-list';
+    }
+
+    static get properties() {
+      return {
+        pens: {
+          type: Array
+        },
+        listLimit: {
+          type: Number,
+          value: () => 50
+        }
+      };
+    }
+
+    createPen() {
+      this.dispatchEvent(new Event('op-createPen', { bubbles: true, composed: true }));
+    }
+  }
+
+  customElements.define(ViewList.is, ViewList);
+</script>

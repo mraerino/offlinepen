@@ -8,7 +8,12 @@
     "polymer-cli": "^1.5.4"
   },
   "scripts": {
+    "postinstall": "bower install",
     "lint": "npm run lint:javascript && polymer lint",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "cuid": "^1.3.8",
+    "dexie": "^1.5.1"
   }
 }
