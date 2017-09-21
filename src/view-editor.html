@@ -6,7 +6,7 @@
     <style>
     </style>
 
-    <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}"></app-route>
+    <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}" active="{{ editorActive }}"></app-route>
 
     <h1>Pen ID: [[ routeData.penId ]]</h1>
   </template>
@@ -22,6 +22,22 @@
           type: Object
         }
       };
+    }
+
+    static get observers() {
+      return [
+        'routeChanged(routeData.*, editorActive)'
+      ];
+    }
+
+    routeChanged(change, active) {
+      if(!active) {
+        this.dispatchEvent(new CustomEvent('op-navigateTo', {
+          detail: { path: '/list' },
+          bubbles: true,
+          composed: true
+        }));
+      }
     }
   }
 
