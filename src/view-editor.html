@@ -10,7 +10,7 @@
 
     <header>
       <a href="/list" title="Back to pen list">&lt;</a>
-      <h1>Pen: [[ routeData.penId ]]</h1>
+      <h1>Pen: [[ penMeta.name ]]</h1>
     </header>
   </template>
 </dom-module>
@@ -22,6 +22,14 @@
     static get properties() {
       return {
         route: {
+          type: Object
+        },
+        currentId: {
+          type: String,
+          value: () => "",
+          observer: 'fetchPen'
+        },
+        penMeta: {
           type: Object
         }
       };
@@ -35,12 +43,22 @@
 
     routeChanged(change, active) {
       if(!active) {
+        this.currentId = "";
         this.dispatchEvent(new CustomEvent('op-navigateTo', {
           detail: { path: '/list' },
           bubbles: true,
           composed: true
         }));
+        return;
       }
+
+      if(change.base && change.base.penId) {
+        this.currentId = change.base.penId;
+      }
+    }
+
+    fetchPen(id) {
+      OfflinePen.db.pens.get(id).then(pen => this.penMeta = pen);
     }
   }
 
