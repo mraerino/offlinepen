@@ -85,8 +85,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       routeChanged(change) {
-        if(change.base && change.base.path == '/') {
+        if(!change.base || !change.base.path) {
+          return;
+        }
+
+        if(change.base.path === '/') {
           this.set('route.path', '/list');
+        }
+
+        if(change.base.path.endsWith('/')) {
+          this.set('route.path', change.base.path.substr(0, -1));
         }
       }
     }
