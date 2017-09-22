@@ -162,7 +162,7 @@
       this.hasSaved = false;
       this._metaDebouncer = Polymer.Debouncer.debounce(
         this._metaDebouncer,
-        Polymer.Async.timeOut.after(1000),
+        Polymer.Async.timeOut.after(500),
         () => OfflinePen.db.pens
           .update(this.currentId, Object.assign({}, change.base, { updatedAt: (new Date()).getTime() }))
           .then(() => this.hasSaved = true)
