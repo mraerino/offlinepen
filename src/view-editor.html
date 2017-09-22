@@ -188,10 +188,10 @@
             name: `index.${type}`,
             content: value
           };
+          this._files[type] = file;
           return OfflinePen.db.files
             .put(file)
-            .then(() => this._files[type] = file)
-            .then(() => this.hasSaved = true)
+            .then(() => this.hasSaved = true);
         });
     }
 
