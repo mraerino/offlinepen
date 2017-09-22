@@ -17,4 +17,6 @@ module.exports = {
     'bower_components/webcomponentsjs/*',
   ],
   navigateFallback: 'index.html',
+  navigateFallbackWhitelist: [/^(?!\/s\/)/],
+  importScripts: ['preview-worker.js'],
 };

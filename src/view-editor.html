@@ -46,6 +46,17 @@
       main section.preview-container {
         min-width: 100%;
       }
+
+      main section.preview-container a {
+        float: right;
+      }
+
+      #preview {
+        border: none;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+      }
     </style>
 
     <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}" active="{{ editorActive }}"></app-route>
@@ -73,7 +84,9 @@
       </section>
 
       <section class="preview-container">
-        Preview goes here :)
+        <a href="[[ previewUrl(currentId) ]]" target="_blank">Open in new tab</a>
+        <h3>Preview</h3>
+        <iframe id="preview"></iframe>
       </section>
     </main>
   </template>
@@ -143,6 +156,7 @@
       this.fetching = true;
       OfflinePen.db.pens.get(id)
         .then(pen => this.penMeta = pen)
+        .then(() => this.$.preview.src = this.previewUrl(id))
         .then(() => OfflinePen.db.files.where('pen_id').equals(id).each(file => {
           const [name, type] = file.name.split('.');
           if(name !== 'index') {
@@ -193,10 +207,16 @@
             content: value
           };
           this._files[type] = file;
+          this.$.preview.contentWindow.location.reload();
           return OfflinePen.db.files
             .put(file)
             .then(() => this.hasSaved = true);
         });
+    }
+
+    previewUrl(id) {
+      const origin = location.hostname === 'localhost' ? location.origin : `https://p.${location.host}`;
+      return `${origin}/s/${id}`;
     }
 
     computeSaveState(saved) {

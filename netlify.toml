@@ -1,0 +1,3 @@
+[build]
+  publish = "build/default"
+  command = "polymer build && gulp copy-extras"
