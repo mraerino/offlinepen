@@ -43,6 +43,10 @@
         saveState: {
           type: String,
           computed: 'computeSaveState(hasSaved)'
+        },
+        fetching: {
+          type: Boolean,
+          value: false
         }
       };
     }
@@ -71,14 +75,14 @@
     }
 
     fetchPen(id) {
-      this._fetching = true;
+      this.fetching = true;
       OfflinePen.db.pens.get(id)
         .then(pen => this.penMeta = pen)
-        .then(() => Polymer.Async.timeOut.run(() => this._fetching = false));
+        .then(() => Polymer.Async.timeOut.run(() => this.fetching = false));
     }
 
     metaChanged(change) {
-      if(this.currentId === "" || this._fetching || change.path === 'penMeta.id') {
+      if(this.currentId === "" || this.fetching || change.path === 'penMeta.id') {
         return;
       }
 
