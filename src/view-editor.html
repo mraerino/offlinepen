@@ -183,7 +183,7 @@
       this.hasSaved = false;
       this._editorDebouncer = Polymer.Debouncer.debounce(
         this._editorDebouncer,
-        Polymer.Async.timeOut.after(1000),
+        Polymer.Async.timeOut.after(500),
         () => {
           const currentFile = type in this._files ? this._files[type] : null;
           const file = {
