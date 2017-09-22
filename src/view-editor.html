@@ -3,19 +3,79 @@
 <link rel="import" href="../bower_components/polymer/lib/utils/async.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/ace-widget/ace-widget.html">
+<link rel="import" href="lib/dexie.html">
+<link rel="import" href="lib/cuid.html">
 
 <dom-module id="view-editor">
   <template>
     <style>
+      :host {
+        display: block;
+      }
+
+      header {
+        display: flex;
+        flex-direction: row;
+      }
+
+      header .backNav {
+        text-decoration: none;
+        background: darkgreen;
+        color: white;
+        font.size: 20px;
+        padding: 10px;
+        margin-right: 10px;
+      }
+
+      header .saveState {
+        margin: 0 0 0 auto;
+        padding: 10px;
+      }
+
+      main {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      main section {
+        flex: 1;
+      }
+
+      main section.preview-container {
+        min-width: 100%;
+      }
     </style>
 
     <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}" active="{{ editorActive }}"></app-route>
 
     <header>
-      <a href="/list" title="Back to pen list">&lt;</a>
-      <paper-input label="Name of the pen" value="{{ penMeta.name }}"></paper-input>
-      <p>[[ saveState ]]</p>
+      <a class="backNav" href="/list" title="Back to pen list">&lt;</a>
+      <paper-input placeholder="Name of the pen" no-label-float value="{{ penMeta.name }}"></paper-input>
+      <p class="saveState">[[ saveState ]]</p>
     </header>
+
+    <main>
+      <section>
+        <h3>HTML</h3>
+        <ace-widget mode="ace/mode/html" data-type="html" on-editor-content="editorChanged"></ace-widget>
+      </section>
+
+      <section>
+        <h3>CSS</h3>
+        <ace-widget mode="ace/mode/css" data-type="css" on-editor-content="editorChanged"></ace-widget>
+      </section>
+
+      <section>
+        <h3>JS</h3>
+        <ace-widget mode="ace/mode/javascript" data-type="js" on-editor-content="editorChanged"></ace-widget>
+      </section>
+
+      <section class="preview-container">
+        Preview goes here :)
+      </section>
+    </main>
   </template>
 </dom-module>
 
@@ -58,6 +118,11 @@
       ];
     }
 
+    constructor() {
+      super();
+      this._files = {};
+    }
+
     routeChanged(change, active) {
       if(!active) {
         this.currentId = "";
@@ -78,6 +143,14 @@
       this.fetching = true;
       OfflinePen.db.pens.get(id)
         .then(pen => this.penMeta = pen)
+        .then(() => OfflinePen.db.files.where('pen_id').equals(id).each(file => {
+          const [name, type] = file.name.split('.');
+          if(name !== 'index') {
+            return;
+          }
+          this._files[type] = file;
+          this.shadowRoot.querySelector(`ace-widget[data-type=${type}]`).value = file.content;
+        }))
         .then(() => Polymer.Async.timeOut.run(() => this.fetching = false));
     }
 
@@ -94,6 +167,32 @@
           .update(this.currentId, Object.assign({}, change.base, { updatedAt: (new Date()).getTime() }))
           .then(() => this.hasSaved = true)
       );
+    }
+
+    editorChanged(e) {
+      const type = e.currentTarget.dataset.type;
+      if(!type) {
+        return;
+      }
+
+      const value = e.detail.value;
+      this.hasSaved = false;
+      this._editorDebouncer = Polymer.Debouncer.debounce(
+        this._editorDebouncer,
+        Polymer.Async.timeOut.after(1000),
+        () => {
+          const currentFile = type in this._files ? this._files[type] : null;
+          const file = {
+            id: currentFile ? currentFile.id : cuid(),
+            pen_id: this.currentId,
+            name: `index.${type}`,
+            content: value
+          };
+          return OfflinePen.db.files
+            .put(file)
+            .then(() => this._files[type] = file)
+            .then(() => this.hasSaved = true)
+        });
     }
 
     computeSaveState(saved) {
