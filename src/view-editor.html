@@ -170,6 +170,10 @@
     }
 
     editorChanged(e) {
+      if(this.currentId === "" || this.fetching) {
+        return;
+      }
+
       const type = e.currentTarget.dataset.type;
       if(!type) {
         return;
