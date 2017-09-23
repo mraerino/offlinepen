@@ -11,7 +11,9 @@
     "polymer": "Polymer/polymer#^2.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "paper-input": "^2.0.2",
-    "ace-widget": "mraerino/ace-widget#1.3.4-hotfix1"
+    "ace-widget": "mraerino/ace-widget#1.3.4-hotfix1",
+    "iron-icons": "^2.0.1",
+    "iron-icon": "^2.0.1"
   },
   "resolutions": {
     "polymer": "^2.0.0"

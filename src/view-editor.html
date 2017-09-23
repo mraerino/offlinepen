@@ -4,6 +4,8 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/ace-widget/ace-widget.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="lib/dexie.html">
 <link rel="import" href="lib/cuid.html">
 
@@ -17,20 +19,40 @@
       header {
         display: flex;
         flex-direction: row;
+        background: var(--paper-green-100);
+        line-height: 30px;
+        height: 50px;
       }
 
       header .backNav {
         text-decoration: none;
-        background: darkgreen;
+        background: var(--paper-green-800);
         color: white;
         font-size: 20px;
         padding: 10px;
         margin-right: 10px;
       }
 
+      header .backNav iron-icon {
+        vertical-align: text-bottom;
+      }
+
+      header paper-input {
+        flex: 1;
+        max-width: 500px;
+        --paper-input-container-input: {
+          font-size: 20px;
+        };
+      }
+
       header .saveState {
         margin: 0 0 0 auto;
         padding: 10px;
+        color: #636363;
+      }
+
+      header .saveState iron-icon {
+        vertical-align: -5px;
       }
 
       main {
@@ -68,9 +90,14 @@
     <iframe id="comms"></iframe>
 
     <header>
-      <a class="backNav" href="/list" title="Back to pen list">&lt;</a>
+      <a class="backNav" href="/list" title="Back to pen list">
+        <iron-icon icon="arrow-back"></iron-icon>
+      </a>
       <paper-input placeholder="Name of the pen" no-label-float value="{{ penMeta.name }}"></paper-input>
-      <p class="saveState">[[ saveState ]]</p>
+      <p class="saveState">
+        <iron-icon icon="[[ computeSaveIcon(hasSaved) ]]"></iron-icon>
+        [[ computeSaveState(hasSaved) ]]
+      </p>
     </header>
 
     <main>
@@ -127,10 +154,6 @@
         hasSaved: {
           type: Boolean,
           value: true
-        },
-        saveState: {
-          type: String,
-          computed: 'computeSaveState(hasSaved)'
         },
         fetching: {
           type: Boolean,
@@ -294,6 +317,10 @@
 
     computeSaveState(saved) {
       return saved ? 'Saved.' : 'Changed...';
+    }
+
+    computeSaveIcon(saved) {
+      return saved ? 'done' : 'update';
     }
   }
 
