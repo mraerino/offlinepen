@@ -13,6 +13,7 @@
   },
   "scripts": {
     "postinstall": "bower install",
+    "build": "polymer build && gulp copy-extras",
     "lint": "npm run lint:javascript && polymer lint",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore"
   },
