@@ -266,9 +266,16 @@
 
           this.updatePreview();
 
+          const updateTime = (new Date()).getTime();
           return OfflinePen.db.files
             .put(file)
-            .then(() => this.hasSaved = true);
+            .then(() => OfflinePen.db.pens.update(this.currentId, { updatedAt: updateTime }))
+            .then(() => {
+              this.fetching = true;
+              this.penMeta.updatedAt = updateTime;
+              this.fetching = false;
+              this.hasSaved = true;
+            });
         });
     }
 
