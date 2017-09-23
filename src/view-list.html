@@ -9,12 +9,41 @@
     <style>
       :host {
         display: block;
+        max-width: 320px;
+        margin: 0 auto;
+        padding: 40px 10px;
+      }
+
+      paper-button {
+        background: var(--paper-amber-500);
+        width: 250px;
+        max-width: 100%;
+        margin: 0 auto;
+        display: block;
+        text-align: center;
+      }
+
+      .list-container {
+        margin-top: 30px;
+        border-radius: 8px;
+        background: grey;
+      }
+
+      a {
+        text-decoration: none;
+        color: black;
+        border-bottom: 2px solid white;
+        display: block;
+      }
+
+      a:last-of-type {
+        border-bottom: none;
       }
     </style>
 
-    <paper-button on-tap="createPen">Create new pen</paper-button>
+    <paper-button raised on-tap="createPen">Create new pen</paper-button>
 
-    <div role="listbox">
+    <div class="list-container" role="listbox">
       <dom-repeat items="[[ pens ]]">
         <template>
           <a href="/edit/[[ item.id ]]" tabindex="-1">
