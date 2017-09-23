@@ -258,7 +258,7 @@
 
     updatePreview(id, content) {
       this.$.comms.contentWindow.postMessage({ id, content }, this._iframeOrigin);
-      this.$.preview.contentWindow.location.reload();
+      this.$.preview.src = this.previewUrl(id);
     }
 
     previewUrl(id) {
