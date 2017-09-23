@@ -200,6 +200,10 @@
     }
 
     fetchPen(id) {
+      if(id === "") {
+        return;
+      }
+
       this.fetching = true;
       OfflinePen.db.pens.get(id)
         .then(pen => this.penMeta = pen)
