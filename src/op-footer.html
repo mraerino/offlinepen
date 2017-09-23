@@ -1,0 +1,38 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="op-footer">
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 20px;
+        color: #ccc;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      a {
+        color: #ccc;
+        font-weight: bold;
+      }
+    </style>
+
+    <p>Made by <a href="https://github.com/mraerino" title="Marcus Weiner on GitHub">Marcus Weiner</a></p>
+  </template>
+</dom-module>
+
+<script>
+  class OpFooter extends Polymer.Element {
+    static get is() {
+      return 'op-footer';
+    }
+
+    static get properties() {
+      return {};
+    }
+  }
+
+  customElements.define(OpFooter.is, OpFooter);
+</script>

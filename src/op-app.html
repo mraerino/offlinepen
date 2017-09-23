@@ -14,12 +14,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="lib/dexie.html">
 <link rel="import" href="lib/cuid.html">
+<link rel="import" href="op-footer.html">
 
 <dom-module id="op-app">
   <template>
     <style>
       :host {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-lazy-pages {
         display: block;
+        flex: 1;
       }
     </style>
 
@@ -34,6 +42,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div view="s">Registering ServiceWorker. Ready shortly.</div>
       <div view="404">404. Oops.</div>
     </iron-lazy-pages>
+
+    <op-footer></op-footer>
   </template>
 
   <script>
