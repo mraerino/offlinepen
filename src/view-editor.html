@@ -13,7 +13,9 @@
   <template>
     <style>
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
       }
 
       header {
@@ -60,17 +62,17 @@
         flex-direction: column;
       }
 
-      main section {
+      section {
         background: #303030;
         color: #dfdfdf;
       }
 
-      main section h3 {
+      section h3 {
         padding: 10px 15px;
         margin: 0;
       }
 
-      main section.preview-container a {
+      section.preview-container a {
         display: block;
         padding: 10px 15px;
         color: #dfdfdf;
@@ -78,17 +80,17 @@
         float: right;
       }
 
-      main section.preview-container a iron-icon {
+      section.preview-container a iron-icon {
         vertical-align: text-top;
       }
 
       #preview {
         border: none;
         width: 100%;
-        height: 100%;
-        min-height: 400px;
+        min-height: 100vh;
         overflow: auto;
         background: white;
+        display: block;
       }
 
       #comms {
@@ -105,8 +107,16 @@
           flex: 1;
         }
 
-        main section.preview-container {
+        section.preview-container {
           min-width: 100%;
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
+        #preview {
+          flex: 1;
+          min-height: 0;
         }
 
         main section ace-widget {
@@ -157,16 +167,18 @@
                     on-editor-content="editorChanged"
                     on-editor-ready="editorReady"></ace-widget>
       </section>
+    </main>
 
-      <section class="preview-container">
+    <section class="preview-container">
+      <div class="head">
         <a href="[[ previewUrl(currentId) ]]" target="_blank">
           <iron-icon icon="launch"></iron-icon>
           Open in new tab
         </a>
         <h3>Preview</h3>
-        <iframe id="preview"></iframe>
-      </section>
-    </main>
+      </div>
+      <iframe id="preview"></iframe>
+    </section>
   </template>
 </dom-module>
 
