@@ -205,6 +205,7 @@
       }
 
       this.fetching = true;
+      this._files = {};
       OfflinePen.db.pens.get(id)
         .then(pen => this.penMeta = pen)
         .then(() => this.$.preview.src = this.previewUrl(id))
@@ -214,8 +215,12 @@
             return;
           }
           this._files[type] = file;
-          this.shadowRoot.querySelector(`ace-widget[data-type=${type}]`).value = file.content;
+          this.updatePreview();
         }))
+        .then(() => ['html','css','js'].forEach(type =>
+          this.shadowRoot.querySelector(`ace-widget[data-type=${type}]`).value =
+            !(type in this._files) ? "" : this._files[type].content
+        ))
         .then(() => Polymer.Async.timeOut.run(() => this.fetching = false));
     }
 
@@ -259,9 +264,7 @@
           };
           this._files[type] = file;
 
-          const props = { title: this.penMeta.name };
-          ['html','css','js'].forEach(type => props[type] = this._files[type] ? this._files[type].content : "");
-          this.updatePreview(this.currentId, this.previewTemplate(props));
+          this.updatePreview();
 
           return OfflinePen.db.files
             .put(file)
@@ -269,9 +272,12 @@
         });
     }
 
-    updatePreview(id, content) {
-      this.$.comms.contentWindow.postMessage({ id, content }, this._iframeOrigin);
-      this.$.preview.src = this.previewUrl(id);
+    updatePreview() {
+      const props = { title: this.penMeta.name };
+      ['html','css','js'].forEach(type => props[type] = (type in this._files) ? this._files[type].content : "");
+      const content = this.previewTemplate(props);
+      this.$.comms.contentWindow.postMessage({ id: this.currentId, content }, this._iframeOrigin);
+      this.$.preview.src = this.previewUrl(this.currentId);
     }
 
     previewUrl(id) {
