@@ -57,31 +57,61 @@
 
       main {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-direction: column;
       }
 
       main section {
-        flex: 1;
+        background: #303030;
+        color: #dfdfdf;
       }
 
-      main section.preview-container {
-        min-width: 100%;
+      main section h3 {
+        padding: 10px 15px;
+        margin: 0;
       }
 
       main section.preview-container a {
+        display: block;
+        padding: 10px 15px;
+        color: #dfdfdf;
+        text-decoration: none;
         float: right;
+      }
+
+      main section.preview-container a iron-icon {
+        vertical-align: text-top;
       }
 
       #preview {
         border: none;
         width: 100%;
         height: 100%;
+        min-height: 400px;
         overflow: auto;
+        background: white;
       }
 
       #comms {
         display: none;
+      }
+
+      @media (min-width: 1024px) {
+        main {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        main section {
+          flex: 1;
+        }
+
+        main section.preview-container {
+          min-width: 100%;
+        }
+
+        main section ace-widget {
+          max-height: 50%;
+        }
       }
     </style>
 
@@ -106,7 +136,8 @@
         <ace-widget mode="ace/mode/html"
                     theme="ace/theme/monokai"
                     data-type="html"
-                    on-editor-content="editorChanged"></ace-widget>
+                    on-editor-content="editorChanged"
+                    on-editor-ready="editorReady"></ace-widget>
       </section>
 
       <section>
@@ -114,7 +145,8 @@
         <ace-widget mode="ace/mode/css"
                     theme="ace/theme/monokai"
                     data-type="css"
-                    on-editor-content="editorChanged"></ace-widget>
+                    on-editor-content="editorChanged"
+                    on-editor-ready="editorReady"></ace-widget>
       </section>
 
       <section>
@@ -122,11 +154,15 @@
         <ace-widget mode="ace/mode/javascript"
                     theme="ace/theme/monokai"
                     data-type="js"
-                    on-editor-content="editorChanged"></ace-widget>
+                    on-editor-content="editorChanged"
+                    on-editor-ready="editorReady"></ace-widget>
       </section>
 
       <section class="preview-container">
-        <a href="[[ previewUrl(currentId) ]]" target="_blank">Open in new tab</a>
+        <a href="[[ previewUrl(currentId) ]]" target="_blank">
+          <iron-icon icon="launch"></iron-icon>
+          Open in new tab
+        </a>
         <h3>Preview</h3>
         <iframe id="preview"></iframe>
       </section>
@@ -300,6 +336,11 @@
               this.hasSaved = true;
             });
         });
+    }
+
+    editorReady(e) {
+      const elem = e.detail.value.container;
+      elem.style.border = "none";
     }
 
     updatePreview() {
