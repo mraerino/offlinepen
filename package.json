@@ -9,11 +9,12 @@
     "eslint-config-google": "^0.7.0",
     "eslint-plugin-html": "^2.0.0",
     "gulp": "^3.9.1",
-    "polymer-cli": "^1.5.4"
+    "polymer-cli": "^1.5.4",
+    "sw-precache": "^5.2.0"
   },
   "scripts": {
     "postinstall": "bower install",
-    "build": "polymer build && gulp copy-extras",
+    "build": "polymer build && gulp",
     "lint": "npm run lint:javascript && polymer lint",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore"
   },

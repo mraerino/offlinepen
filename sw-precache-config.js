@@ -17,7 +17,8 @@ module.exports = {
     'manifest.json',
     'bower_components/webcomponentsjs/*',
     'node_modules/dexie/dist/dexie.min.js',
-    'bower_components/ace-builds/src-min-noconflict/{theme-,mode-,worker-}*.js',
+    'bower_components/ace-builds/src-min-noconflict/theme-monokai.js',
+    'bower_components/ace-builds/src-min-noconflict/{mode,worker}-{html,js,css}.js',
   ],
   navigateFallback: 'index.html',
 };
