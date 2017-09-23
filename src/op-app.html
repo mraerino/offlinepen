@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="lib/dexie.html">
 <link rel="import" href="lib/cuid.html">
 <link rel="import" href="op-footer.html">
@@ -23,11 +24,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        position: relative;
       }
 
       iron-lazy-pages {
         display: flex;
         flex: 1;
+      }
+
+      #browser-warning-container {
+        position: absolute;
+        top: 0; left: 0;
+        bottom: 0; right: 0;
+        z-index: 10;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+        background: rgba(0,0,0,0.5);
+      }
+
+      #browser-warning-container[hidden] {
+        display: none;
+      }
+
+      .warning-wrapper {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+      }
+
+      #browser-warning {
+        width: 500px;
+        max-width: 100%;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+      }
+
+      #browser-warning paper-button {
+        background: var(--google-blue-700);
+        color: white;
+        float: right;
       }
     </style>
 
@@ -44,6 +82,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </iron-lazy-pages>
 
     <op-footer></op-footer>
+
+    <div id="browser-warning-container" hidden>
+      <div class="warning-wrapper">
+        <div id="browser-warning">
+          <h3>Warning</h3>
+          <p>
+            You are using a browser which does not support all features required by this application. Generation of
+            preview pages will not be possible and therefore renders this experiment somewhat useless.
+          </p>
+          <p>
+            If you are on iOS you are out of luck, but on desktops you can use the following browsers:
+          </p>
+          <ul>
+            <li><a href="https://www.google.de/chrome/browser/desktop/">Google Chrome</a></li>
+            <li><a href="https://www.mozilla.org/firefox/">Firefox</a></li>
+          </ul>
+          <paper-button on-click="closeModal">Try anyway</paper-button>
+        </div>
+      </div>
+    </div>
   </template>
 
   <script>
@@ -80,6 +138,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               .then(id => this.set('route.path', `/edit/${id}`))
         );
         this.addEventListener('op-navigateTo', e => e.detail.path && this.set('route.path', e.detail.path));
+
+        if(!('serviceWorker' in navigator) && localStorage.getItem('browser-warning-ignored') !== 'true') {
+          this.$['browser-warning-container'].removeAttribute('hidden');
+        }
       }
 
       viewChanged(change) {
@@ -116,6 +178,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if(change.base.path.endsWith('/')) {
           this.set('route.path', change.base.path.substr(0, -1));
         }
+      }
+
+      closeModal() {
+        this.$['browser-warning-container'].setAttribute('hidden', true);
+        localStorage.setItem('browser-warning-ignored', "true");
       }
     }
 
