@@ -141,7 +141,7 @@
 
     static get observers() {
       return [
-        'routeChanged(routeData.*, editorActive)',
+        'routeChanged(routeData.*)',
         'metaChanged(penMeta.*)'
       ];
     }
@@ -183,8 +183,8 @@
       this.$.comms.src = `${this._iframeOrigin}/preview-comms.html`;
     }
 
-    routeChanged(change, active) {
-      if(!active) {
+    routeChanged(change) {
+      if(!this.editorActive) {
         this.currentId = "";
         this.dispatchEvent(new CustomEvent('op-navigateTo', {
           detail: { path: '/list' },
