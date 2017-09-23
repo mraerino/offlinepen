@@ -73,7 +73,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if(location.hostname.startsWith('p.') || location.hostname === 'localhost') {
             navigator.serviceWorker.register('preview-worker.js', {
               scope: '/s/',
-            });
+            })
+              .then(() => location.pathname.startsWith('/s/') && window.location.reload())
+              .catch(e => console.error(e));
           }
         });
       }
