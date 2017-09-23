@@ -15,6 +15,7 @@ module.exports = {
     'index.html',
     'preview-comms.html',
     'manifest.json',
+    'src/**/*',
     'bower_components/webcomponentsjs/*',
     'node_modules/dexie/dist/dexie.min.js',
     'bower_components/ace-builds/src-min-noconflict/theme-monokai.js',
