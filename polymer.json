@@ -12,7 +12,8 @@
   "extraDependencies": [
     "manifest.json",
     "_redirects",
-    "bower_components/webcomponentsjs/*.js"
+    "bower_components/webcomponentsjs/*.js",
+    "preview-comms.html"
   ],
   "lint": {
     "rules": ["polymer-2"]

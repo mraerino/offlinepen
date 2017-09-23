@@ -67,16 +67,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Load and register pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          if(!location.hostname.startsWith('p.')) {
-            navigator.serviceWorker.register('service-worker.js', {
-              scope: Polymer.rootPath,
-            });
-          }
+          navigator.serviceWorker.register('service-worker.js', {
+            scope: Polymer.rootPath,
+          });
           if(location.hostname.startsWith('p.') || location.hostname === 'localhost') {
-            const swHost = location.hostname === 'localhost'
-              ? location.origin
-              : `https://${location.host.split('.').slice(1).join('.')}`;
-            navigator.serviceWorker.register(`${swHost}/preview-worker.js`, {
+            navigator.serviceWorker.register('preview-worker.js', {
               scope: '/s/',
             });
           }

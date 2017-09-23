@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Preview comms iframe</title>
+</head>
+<body>
+  <script src="node_modules/dexie/dist/dexie.min.js"></script>
+  <script>
+    const db = new Dexie('offlinepen_preview');
+    db.version(1).stores({
+      pen_content: 'id'
+    });
+
+    window.addEventListener('message', event => {
+      const originUrl = new URL(event.origin);
+      if(['offlinepen.space', 'localhost'].indexOf(originUrl.hostname) === -1) {
+        console.error("Message came from wrong origin");
+        return;
+      }
+
+      const pen = {
+        id: event.data.id,
+        content: event.data.content
+      };
+      db.pen_content.put(pen);
+    });
+  </script>
+</body>
+</html>

@@ -57,9 +57,15 @@
         height: 100%;
         overflow: auto;
       }
+
+      #comms {
+        display: none;
+      }
     </style>
 
     <app-route route="[[ route ]]" pattern="/:penId" data="{{ routeData }}" active="{{ editorActive }}"></app-route>
+
+    <iframe id="comms"></iframe>
 
     <header>
       <a class="backNav" href="/list" title="Back to pen list">&lt;</a>
@@ -131,9 +137,41 @@
       ];
     }
 
+    get previewTemplate() {
+      const indent = (text, size) => text.split('\n').join(`\n${' '.repeat(size*2)}`);
+
+      return ({ html = "", css = "", js = "", title = "OfflinePen" }) =>
+`<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>${title} - OfflinePen</title>
+  <meta name="generator" content="OfflinePen">
+
+  <style>
+    ${indent(css,2)}
+  </style>
+</head>
+<body>
+  ${indent(html,1)}
+
+  <script>
+    ${indent(js,2)}
+  <\/script>
+</body>
+</html>`;
+    }
+
     constructor() {
       super();
       this._files = {};
+      this._iframeOrigin = location.hostname === 'localhost' ? location.origin : `https://p.${location.host}`;
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      this.$.comms.src = `${this._iframeOrigin}/preview-comms.html`;
     }
 
     routeChanged(change, active) {
@@ -207,11 +245,20 @@
             content: value
           };
           this._files[type] = file;
-          this.$.preview.contentWindow.location.reload();
+
+          const props = { title: this.penMeta.name };
+          ['html','css','js'].forEach(type => props[type] = this._files[type] ? this._files[type].content : "");
+          this.updatePreview(this.currentId, this.previewTemplate(props));
+
           return OfflinePen.db.files
             .put(file)
             .then(() => this.hasSaved = true);
         });
+    }
+
+    updatePreview(id, content) {
+      this.$.comms.contentWindow.postMessage({ id, content }, this._iframeOrigin);
+      this.$.preview.contentWindow.location.reload();
     }
 
     previewUrl(id) {
