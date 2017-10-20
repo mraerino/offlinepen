@@ -90,3 +90,8 @@ Built with the following great libraries:
 - [Dexie](http://dexie.org/) - IndexedDb layer
 - [Cuid](https://github.com/ericelliott/cuid) - ID generation
 - [sw-precache](https://github.com/GoogleChromeLabs/sw-precache) - Service Worker generation
+
+## License
+
+This project is licensed under the MIT License.
+See [LICENSE](/LICENSE) file for more.
